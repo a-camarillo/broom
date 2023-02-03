@@ -28,13 +28,26 @@ func Init() {
 	branches := GetBranches()
 
 	branchList := tview.NewList().ShowSecondaryText(false)
-	branchList.SetBorder(true).SetTitle("Branches")
+	branchList.SetBorder(true).SetTitle("Current Branches")
+
+	deleteList := tview.NewList().ShowSecondaryText(false)
+	deleteList.SetSelectedFocusOnly(true).SetBorder(true).SetTitle("Branches To Be Deleted")
+
+	branchList.SetSelectedFunc(func(idx int, main string, secondary string, shortcut rune) {
+		if deleteList.FindItems(main, "", false, false) == nil {
+			deleteList.AddItem(main, "", 0, nil)
+		} else {
+			deleteList.RemoveItem(idx)
+		}
+	})
+
 	for i := range branches {
 		branchList.AddItem(branches[i], "", 0, nil)
 	}
 
 	flex := tview.NewFlex().
-		AddItem(branchList, 0, 1, true)
+		AddItem(branchList, 0, 1, true).
+		AddItem(deleteList, 0, 1, false)
 	if err := app.SetRoot(flex, true).Run(); err != nil {
 		panic(err)
 	}
