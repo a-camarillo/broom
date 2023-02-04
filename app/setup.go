@@ -31,7 +31,9 @@ func Init() {
 	helpBox := tview.NewTextView()
 	helpBox.SetBorder(true).SetTitle("Help")
 	helpBox.SetText(`
-	To Add/Remove a branch from "Branches To Be Deleted", highlight the current branch and press Enter
+	To navigate between "Current Branches" and "Branches To Be Deleted" use h/◀ and l/▶
+	To add/remove a branch from "Branches To Be Deleted", highlight the current branch and press Enter
+	To toggle this help box, press "?" 
 	`)
 
 	branchList := tview.NewList().ShowSecondaryText(false)
@@ -58,6 +60,35 @@ func Init() {
 			AddItem(branchList, 0, 1, true).
 			AddItem(deleteList, 0, 1, false), 0, 3, true).
 		AddItem(helpBox, 0, 1, false)
+
+	flex.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+		if event.Rune() == 'l' {
+			app.SetFocus(deleteList)
+			return tcell.NewEventKey(tcell.KeyRune, 'l', tcell.ModNone)
+		}
+		if event.Key() == tcell.KeyRight {
+			app.SetFocus(deleteList)
+			return tcell.NewEventKey(tcell.KeyRune, rune(tcell.KeyRight), tcell.ModNone)
+		}
+		if event.Rune() == 'h' {
+			app.SetFocus(branchList)
+			return tcell.NewEventKey(tcell.KeyRune, 'h', tcell.ModNone)
+		}
+		if event.Key() == tcell.KeyLeft {
+			app.SetFocus(branchList)
+			return tcell.NewEventKey(tcell.KeyRune, rune(tcell.KeyLeft), tcell.ModNone)
+		}
+		if event.Rune() == '?' {
+			if flex.GetItemCount() > 1 {
+				flex.RemoveItem(helpBox)
+				return tcell.NewEventKey(tcell.KeyRune, '?', tcell.ModNone)
+			} else {
+				flex.AddItem(helpBox, 0, 1, false)
+			}
+		}
+		return event
+	})
+
 	if err := app.SetRoot(flex, true).Run(); err != nil {
 		panic(err)
 	}
