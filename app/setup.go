@@ -31,9 +31,9 @@ func Init() {
 	helpBox := tview.NewTextView()
 	helpBox.SetBorder(true).SetTitle("Help")
 	helpBox.SetText(`
+	To toggle this help box, press "?"
 	To navigate between "Current Branches" and "Branches To Be Deleted" use h/◀ and l/▶
-	To add/remove a branch from "Branches To Be Deleted", highlight the current branch and press Enter
-	To toggle this help box, press "?" 
+	To add/remove a branch from "Branches To Be Deleted", highlight the current branch and press Enter 
 	`)
 
 	branchList := tview.NewList().ShowSecondaryText(false)
@@ -43,12 +43,14 @@ func Init() {
 	deleteList.SetSelectedFocusOnly(true).SetMainTextColor(tcell.ColorRed.TrueColor())
 	deleteList.SetBorder(true).SetTitle("Branches To Be Deleted")
 
-	branchList.SetSelectedFunc(func(idx int, main string, secondary string, shortcut rune) {
+	branchList.SetSelectedFunc(func(idx int, main string, sec string, short rune) {
 		if deleteList.FindItems(main, "", false, false) == nil {
 			deleteList.AddItem(main, "", 0, nil)
-		} else {
-			deleteList.RemoveItem(idx)
 		}
+	})
+
+	deleteList.SetSelectedFunc(func(idx int, main string, sec string, short rune) {
+		deleteList.RemoveItem(idx)
 	})
 
 	for i := range branches {
