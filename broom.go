@@ -1,4 +1,4 @@
-package app
+package main
 
 import (
 	"log"
@@ -9,28 +9,7 @@ import (
 	"github.com/rivo/tview"
 )
 
-func GetBranches() []string {
-	output, err := exec.Command("git", "branch").Output()
-	if err != nil {
-		log.Fatal(err)
-	}
-	branchStr := strings.TrimSpace(string(output))
-	branchSlice := strings.Split(branchStr, "\n")
-	var trimSlice []string
-	for i := range branchSlice {
-		trimSlice = append(trimSlice, strings.TrimSpace(branchSlice[i]))
-	}
-	return trimSlice
-}
-
-func pop(s []string, i int) []string {
-	s[i] = s[len(s)-1]
-	s[len(s)-1] = ""
-	s = s[:len(s)-1]
-	return s
-}
-
-func Init() {
+func InitializeMenu() {
 
 	var branchesToDelete []string
 	modalIsOpen := false
@@ -137,4 +116,25 @@ func Init() {
 	if err := app.SetRoot(pages, true).Run(); err != nil {
 		panic(err)
 	}
+}
+
+func GetBranches() []string {
+	output, err := exec.Command("git", "branch").Output()
+	if err != nil {
+		log.Fatal(err)
+	}
+	branchStr := strings.TrimSpace(string(output))
+	branchSlice := strings.Split(branchStr, "\n")
+	var trimSlice []string
+	for i := range branchSlice {
+		trimSlice = append(trimSlice, strings.TrimSpace(branchSlice[i]))
+	}
+	return trimSlice
+}
+
+func pop(s []string, i int) []string {
+	s[i] = s[len(s)-1]
+	s[len(s)-1] = ""
+	s = s[:len(s)-1]
+	return s
 }
