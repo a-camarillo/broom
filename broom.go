@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bytes"
+	"fmt"
 	"log"
+
 	"os/exec"
 	"strings"
 
@@ -120,11 +123,16 @@ func InitializeMenu() {
 }
 
 func GetBranches() []string {
-	output, err := exec.Command("git", "branch").Output()
+	cmd := exec.Command("git", "branch")
+	var output bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &output
+	cmd.Stderr = &stderr
+	err := cmd.Run()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(fmt.Sprint(err) + ": " + stderr.String())
 	}
-	branchStr := strings.TrimSpace(string(output))
+	branchStr := strings.TrimSpace(output.String())
 	branchSlice := strings.Split(branchStr, "\n")
 	var trimSlice []string
 	for i := range branchSlice {
