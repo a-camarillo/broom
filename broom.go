@@ -24,7 +24,8 @@ func InitializeMenu() {
 	To quit use Ctrl + C
 	To toggle this help box, press "?"
 	To navigate between "Current Branches" and "Branches To Be Deleted" use h/◀ and l/▶
-	To add/remove a branch from "Branches To Be Deleted", highlight the current branch and press Enter 
+	To add/remove a branch from "Branches To Be Deleted", highlight the current branch and press Enter
+	To confirm branches to be deleted, press "/" 
 	`)
 
 	branchList := tview.NewList().ShowSecondaryText(false)
