@@ -107,8 +107,11 @@ func InitializeMenu() {
 			pages.HidePage("modal")
 			modalIsOpen = false
 		} else {
-			deleteString := strings.Join(branchesToDelete, " ")
-			err := exec.Command("git", "branch", "-d", deleteString).Run()
+			cmd := exec.Command("git", "branch", "-d")
+			for _, branch := range branchesToDelete {
+				cmd.Args = append(cmd.Args, branch)
+			}
+			err := cmd.Run()
 			if err != nil {
 				panic(err)
 			}
