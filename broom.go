@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"log"
-
 	"os/exec"
 	"strings"
 
@@ -142,7 +141,7 @@ func GetBranches() []string {
 }
 
 func pop(s []string, i int) []string {
-	s[i] = s[len(s)-1]
+	copy(s[i:], s[i+1:])
 	s[len(s)-1] = ""
 	s = s[:len(s)-1]
 	return s
