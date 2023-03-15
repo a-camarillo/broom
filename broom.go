@@ -108,9 +108,7 @@ func InitializeMenu() {
 			modalIsOpen = false
 		} else {
 			cmd := exec.Command("git", "branch", "-d")
-			for _, branch := range branchesToDelete {
-				cmd.Args = append(cmd.Args, branch)
-			}
+			cmd.Args = append(cmd.Args, branchesToDelete...)
 			err := cmd.Run()
 			if err != nil {
 				panic(err)
