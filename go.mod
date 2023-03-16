@@ -1,4 +1,4 @@
-module example.com/broom
+module github.com/a-camarillo/broom
 
 go 1.19
 
