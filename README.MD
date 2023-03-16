@@ -1,8 +1,7 @@
 # broom
 
-## A CLI tool I am writing in Go. 
+## An interactive CLI tool for cleaning up your local git branches
 
-### It's time for spring cleaning, sweep sweep sweep.
-
+![](https://github.com/a-camarillo/broom/blob/main/broomDemo1.gif)
 
 
