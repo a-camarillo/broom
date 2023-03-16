@@ -2,6 +2,6 @@
 
 ## An interactive CLI tool for cleaning up your local git branches
 
-![](https://github.com/a-camarillo/broom/blob/main/images/broomDemo1.gif)
+![](https://raw.githubusercontent.com/a-camarillo/broom/main/images/broomDemo2.gif)
 
 
