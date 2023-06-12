@@ -123,7 +123,7 @@ func InitializeMenu() {
 }
 
 func GetBranches() []string {
-	cmd := exec.Command("git", "branch")
+	cmd := exec.Command("git", "branch", "-la")
 	var output bytes.Buffer
 	var stderr bytes.Buffer
 	cmd.Stdout = &output
