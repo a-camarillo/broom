@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"log"
+	"os"
 	"os/exec"
 	"strings"
 
@@ -14,11 +15,23 @@ import (
 func InitializeMenu() {
 
 	var branchesToDelete []string
+	var path string
+
 	modalIsOpen := false
 
 	app := tview.NewApplication()
 
-	branches := GetBranches()
+	if len(os.Args) > 1 {
+		path = os.Args[1]
+	} else {
+		path = "."
+	}
+
+	branches := RefList{}
+	_, err := branches.FillList(path)
+	if err != nil {
+		panic(err)
+	}
 
 	helpBox := tview.NewTextView()
 	helpBox.SetBorder(true).SetTitle("Help")
@@ -54,8 +67,8 @@ func InitializeMenu() {
 		SetBackgroundColor(tcell.ColorBlack).
 		AddButtons([]string{"Yes", "No"})
 
-	for i := range branches {
-		branchList.AddItem(branches[i], "", 0, nil)
+	for i := range branches.Refs {
+		branchList.AddItem(branches.Refs[i].Short(), "", 0, nil)
 	}
 
 	flex := tview.NewFlex().SetDirection(tview.FlexRow).
@@ -118,7 +131,8 @@ func InitializeMenu() {
 	})
 
 	if err := app.SetRoot(pages, true).Run(); err != nil {
-		panic(err)
+		errString := fmt.Sprintf("%s", err)
+		panic(errString)
 	}
 }
 
