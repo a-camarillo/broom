@@ -1,12 +1,8 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
-	"log"
 	"os"
-	"os/exec"
-	"strings"
 
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
@@ -27,8 +23,12 @@ func InitializeMenu() {
 		path = "."
 	}
 
-	branches := RefList{}
-	_, err := branches.FillList(path)
+	repo, err := NewGitRepositoryFromString(path)
+	if err != nil {
+		panic(err)
+	}
+
+	refs, err := NewReferences(repo)
 	if err != nil {
 		panic(err)
 	}
@@ -67,8 +67,9 @@ func InitializeMenu() {
 		SetBackgroundColor(tcell.ColorBlack).
 		AddButtons([]string{"Yes", "No"})
 
-	for i := range branches.Refs {
-		branchList.AddItem(branches.Refs[i].Short(), "", 0, nil)
+	refNames, _ := refs.GetReferenceNames()
+	for _, i := range refNames {
+		branchList.AddItem(i, "", 0, nil)
 	}
 
 	flex := tview.NewFlex().SetDirection(tview.FlexRow).
@@ -120,11 +121,8 @@ func InitializeMenu() {
 			pages.HidePage("modal")
 			modalIsOpen = false
 		} else {
-			cmd := exec.Command("git", "branch", "-d")
-			cmd.Args = append(cmd.Args, branchesToDelete...)
-			err := cmd.Run()
-			if err != nil {
-				panic(err)
+			for _, i := range branchesToDelete {
+				repo.Repository.DeleteBranch(i)
 			}
 			app.Stop()
 		}
@@ -134,30 +132,4 @@ func InitializeMenu() {
 		errString := fmt.Sprintf("%s", err)
 		panic(errString)
 	}
-}
-
-func GetBranches() []string {
-	cmd := exec.Command("git", "branch", "-la")
-	var output bytes.Buffer
-	var stderr bytes.Buffer
-	cmd.Stdout = &output
-	cmd.Stderr = &stderr
-	err := cmd.Run()
-	if err != nil {
-		log.Fatal(fmt.Sprint(err) + ": " + stderr.String())
-	}
-	branchStr := strings.TrimSpace(output.String())
-	branchSlice := strings.Split(branchStr, "\n")
-	var trimSlice []string
-	for i := range branchSlice {
-		trimSlice = append(trimSlice, strings.TrimSpace(branchSlice[i]))
-	}
-	return trimSlice
-}
-
-func pop(s []string, i int) []string {
-	copy(s[i:], s[i+1:])
-	s[len(s)-1] = ""
-	s = s[:len(s)-1]
-	return s
 }
