@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+
+  build:
+    name: build broom
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: nix setup
+      uses: ./.github/actions/common-setup
+      with:
+        SECRET_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: nix build
+      run: |
+        nix build -L .#broom
