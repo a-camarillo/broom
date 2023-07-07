@@ -18,19 +18,21 @@
         pkgs = nixpkgs.legacyPackages.${system};
         broom = pkgs.buildGoModule {
           pname = "broom";
-          version = "0.1.0";
+          version = "0.2.0";
 
           src = nix-filter.lib {
             root = ./.;
             include = [
+              "branch.go"
               "broom.go"
               "go.mod"
               "go.sum"
               "main.go"
+              "utils.go"
             ];
           };
 
-          vendorHash = "sha256-M5DLDj509qNch0eeLlKfrUcxc0kh8UjTAaJv5bCv6qk=";
+          vendorHash = "sha256-dJau15RnNi/TajthZVEgvNgtRM8ePsyBciyRK7VpbTA=";
         };
       in
       {
