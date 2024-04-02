@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/gdamore/tcell/v2"
@@ -12,6 +13,8 @@ func InitializeMenu() {
 
 	var branchesToDelete []string
 	var path string
+        
+        pwd, _ := os.Getwd()
 
 	modalIsOpen := false
 
@@ -25,12 +28,14 @@ func InitializeMenu() {
 
 	repo, err := NewGitRepositoryFromString(path)
 	if err != nil {
-		panic(err)
+          error := fmt.Errorf("error for path %s: %s", pwd, err)
+          log.Fatal(error)
 	}
 
 	refs, err := NewReferences(repo)
 	if err != nil {
-		panic(err)
+          error := fmt.Errorf("error: %s", err)
+          log.Fatal(error)
 	}
 
 	helpBox := tview.NewTextView()
