@@ -36,6 +36,12 @@
         };
       in
       {
+        devShells = {
+          default = pkgs.mkShell {
+            packages = [ pkgs.go ];
+            inputsFrom = [ self.packages ];
+          };
+        };
         packages = {
           inherit broom;
         };
