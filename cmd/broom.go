@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"fmt"
@@ -20,12 +20,12 @@ func InitializeMenu() {
 
 	app := tview.NewApplication()
 
-	if len(os.Args) > 1 {
-		path = os.Args[1]
-	} else {
-		path = "."
-	}
-
+//	if len(os.Args) > 1 {
+//		path = os.Args[1]
+//	} else {
+//		path = "."
+//	}
+        path = pwd
 	repo, err := NewGitRepositoryFromString(path)
 	if err != nil {
           error := fmt.Errorf("error for path %s: %s", pwd, err)

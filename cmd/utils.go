@@ -1,4 +1,4 @@
-package main
+package cmd
 
 func pop(s []string, i int) []string {
 	copy(s[i:], s[i+1:])
