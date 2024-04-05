@@ -1,5 +1,9 @@
 package main
 
+import (
+  "github.com/a-camarillo/broom/cmd"
+)
+
 func main() {
-	InitializeMenu()
+  cmd.Execute()
 }
