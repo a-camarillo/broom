@@ -4,8 +4,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var Remotes bool
+
 func init() {
   rootCmd.AddCommand(runCmd)
+  runCmd.Flags().BoolVar(&Remotes,"with-remotes",false,"Additionally show remote branches")
 }
 
 var runCmd = &cobra.Command{
@@ -17,3 +20,4 @@ var runCmd = &cobra.Command{
     InitializeMenu()
   },
 }
+

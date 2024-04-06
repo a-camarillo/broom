@@ -20,11 +20,6 @@ func InitializeMenu() {
 
 	app := tview.NewApplication()
 
-//	if len(os.Args) > 1 {
-//		path = os.Args[1]
-//	} else {
-//		path = "."
-//	}
         path = pwd
 	repo, err := NewGitRepositoryFromString(path)
 	if err != nil {
@@ -71,11 +66,17 @@ func InitializeMenu() {
 		SetText("Are you sure you want to delete these branches?").
 		SetBackgroundColor(tcell.ColorBlack).
 		AddButtons([]string{"Yes", "No"})
-
-	refNames, _ := refs.GetReferenceNames()
-	for _, i := range refNames {
-		branchList.AddItem(i, "", 0, nil)
-	}
+        if !Remotes {
+          refNames, _ := refs.GetReferenceNames()
+          for _, i := range refNames {
+                  branchList.AddItem(i, "", 0, nil)
+          }
+        } else {
+          refNames, _ := refs.GetReferenceNamesWithRemotes()
+          for _, i := range refNames {
+                  branchList.AddItem(i, "", 0, nil)
+          } 
+        }
 
 	flex := tview.NewFlex().SetDirection(tview.FlexRow).
 		AddItem(tview.NewFlex().
