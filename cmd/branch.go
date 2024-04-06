@@ -33,9 +33,9 @@ func NewGitRepositoryFromString(s string) (*GitRepository, error) {
 
 // NewReferences accepts a GitRepository and returns a pointer to a
 // References object
-func NewReferences(r *GitRepository) (*References, error) {
+func NewReferences(g *GitRepository) (*References, error) {
 
-	refs, err := r.Repository.References()
+	refs, err := g.Repository.References()
 	if err != nil {
 		return nil, err
 	}
@@ -47,6 +47,18 @@ func NewReferences(r *GitRepository) (*References, error) {
 // GetReferenceNames gets all of the short hand reference names from the
 // current git repository
 func (r *References) GetReferenceNames() ([]string, error) {
+	var refNames []string
+
+	r.Refs.ForEach(func(ref *plumbing.Reference) error {
+		if ref.Type() == plumbing.HashReference && !ref.Name().IsTag() &&!ref.Name().IsRemote() {
+			refNames = append(refNames, ref.Name().Short())
+		}
+		return nil
+	})
+	return refNames, nil
+}
+
+func (r *References) GetReferenceNamesWithRemotes() ([]string, error) {
 	var refNames []string
 
 	r.Refs.ForEach(func(ref *plumbing.Reference) error {
