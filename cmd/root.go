@@ -14,7 +14,10 @@ var rootCmd = &cobra.Command{
        "Includes options for viewing remote references.\n" +
        "Documentation can be found at https://pkg.go.dev/github.com/a-camarillo/broom.",
   Run: func(cmd *cobra.Command, args[]string) {
-    //TODO add commands lmao 
+    //TODO add commands lmao
+    if len(args) == 0 {
+      cmd.Help()
+    }
   },
 }
 
