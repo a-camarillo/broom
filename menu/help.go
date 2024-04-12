@@ -2,16 +2,18 @@ package menu
 
 import (
  "github.com/rivo/tview"
+ "github.com/gdamore/tcell/v2"
 )
 
 type helpBox struct {
-  *tview.TextView
+  *tview.Modal
 }
 
 func NewHelpBox(m *Menu) *helpBox {
   helpBox := &helpBox{
-    TextView: tview.NewTextView(),
+    Modal: tview.NewModal(),
   }
+  helpBox.setKeybinding(m)
   helpBox.SetText(`
   To quit use "Ctrl+c" or "q"
   To toggle this help box, press "?"
@@ -22,4 +24,15 @@ func NewHelpBox(m *Menu) *helpBox {
   
 
   return helpBox
+}
+
+func (h *helpBox) setKeybinding(m *Menu) {
+  h.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+    switch event.Rune() {
+    case '?':
+      m.pages.HidePage("help")
+    }
+
+    return event 
+  })
 }
