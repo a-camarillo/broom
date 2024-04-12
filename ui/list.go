@@ -1,4 +1,4 @@
-package menu
+package ui
 
 import (
 	"github.com/gdamore/tcell/v2"
@@ -9,11 +9,11 @@ type branchList struct {
   *tview.List
 }
 
-func NewBranchList(m *Menu) *branchList {
+func NewBranchList(u *UI) *branchList {
   branchList := &branchList{
     List: tview.NewList().ShowSecondaryText(false),
   }
-  branchList.setKeybinding(m)
+  branchList.setKeybinding(u)
   return branchList
 }
 
@@ -42,7 +42,7 @@ func (b *branchList) newDeleteList() *tview.List {
   return deleteList
 }
 
-func (b *branchList) setKeybinding(m *Menu) {
+func (b *branchList) setKeybinding(u *UI) {
   b.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
     switch event.Rune() {
     case 'j':
