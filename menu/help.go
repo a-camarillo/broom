@@ -14,6 +14,7 @@ func NewHelpBox(m *Menu) *helpBox {
     Modal: tview.NewModal(),
   }
   helpBox.setKeybinding(m)
+  helpBox.SetBackgroundColor(tcell.Color(tcell.ColorBlack))
   helpBox.SetText(`
   To quit use "Ctrl+c" or "q"
   To toggle this help box, press "?"

@@ -25,3 +25,13 @@ func (m *menuModal) NewConfirmationModal() *tview.Modal {
   // handle all Box Methods
   return confirmationModal
 }
+
+func (m *menuModal) confirmationDoneFunc(u *Menu) {
+  m.SetDoneFunc(func(buttonIndex int, buttonLabel string) {
+    if buttonLabel == "No" {
+      u.app.Stop()
+    } else {
+      u.app.Stop()
+    }
+  })
+}
