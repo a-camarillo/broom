@@ -25,13 +25,19 @@ func Initialize() {
   
   flex := NewFlexBox(menu)
   helpBox := NewHelpBox(menu)
-  confirmationModal := NewMenuModal(menu).NewConfirmationModal()
+  localList := NewBranchList(menu).newLocalList()
+  deleteList := NewBranchList(menu).newDeleteList()
+  confirmationModal := NewMenuModal(menu)
 
-  flex.AddItem(helpBox, 0, 1, true)
+  flex.AddItem(localList, 0, 1, true).
+       AddItem(deleteList, 0, 1, false)
 
   menu.pages.
     AddPage("container", flex, true, true).
-    AddPage("confirmationModal", confirmationModal, true, false)
+    AddPage("help", helpBox, true, true).
+    AddPage("confirmation", confirmationModal.NewConfirmationModal(),
+    true,
+    false)
   
   if err := menu.app.SetRoot(menu.pages, true).Run(); err != nil {
     errString := fmt.Sprintf("%s", err)
