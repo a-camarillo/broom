@@ -1,4 +1,4 @@
-package menu
+package ui
 
 import (
 	"fmt"
@@ -8,38 +8,39 @@ import (
 
 // Menu is a struct for containing the outer most parts of the visual
 // menu whose fields should be accesible by children elements.
-type Menu struct {
+type UI struct {
   app *tview.Application
   pages *tview.Pages
 }
 
-func NewMenu() *Menu {
-  return &Menu{
+func NewUI() *UI {
+  return &UI{
     app: tview.NewApplication(),
     pages: tview.NewPages(),
   }
 }
 
 func Initialize() {
-  menu := NewMenu()
+  ui := NewUI()
   
-  flex := NewFlexBox(menu)
-  helpBox := NewHelpBox(menu)
-  localList := NewBranchList(menu).newLocalList()
-  deleteList := NewBranchList(menu).newDeleteList()
-  confirmationModal := NewMenuModal(menu)
+  flex := NewFlexBox(ui)
+  localList := NewBranchList(ui).newLocalList()
+  deleteList := NewBranchList(ui).newDeleteList()
+  confirmationModal := NewMenuModal(ui)
+  helpModal := NewMenuModal(ui)
 
   flex.AddItem(localList, 0, 1, true).
        AddItem(deleteList, 0, 1, false)
 
-  menu.pages.
+  ui.pages.
     AddPage("container", flex, true, true).
-    AddPage("help", helpBox, true, true).
-    AddPage("confirmation", confirmationModal.NewConfirmationModal(),
+    AddPage("help",
+    helpModal.NewHelpModal(ui), true, true).
+    AddPage("confirmation", confirmationModal.NewConfirmationModal(ui),
     true,
     false)
   
-  if err := menu.app.SetRoot(menu.pages, true).Run(); err != nil {
+  if err := ui.app.SetRoot(ui.pages, true).Run(); err != nil {
     errString := fmt.Sprintf("%s", err)
     panic(errString)
   } 
