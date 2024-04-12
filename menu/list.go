@@ -19,8 +19,7 @@ func NewBranchList(m *Menu) *branchList {
 
 func (b *branchList) newLocalList() *tview.List {
   // handle all List Methods
-  localList := tview.NewList().
-  ShowSecondaryText(false)
+  localList := b.List
 
   // handle all Box Methods
   localList.SetBorder(true).
@@ -32,7 +31,6 @@ func (b *branchList) newLocalList() *tview.List {
 func (b *branchList) newDeleteList() *tview.List {
   // handle all List Methods
   deleteList := b.List.
-  ShowSecondaryText(false).
   SetSelectedFocusOnly(true).
   SetMainTextColor(tcell.ColorRed.TrueColor())
 
