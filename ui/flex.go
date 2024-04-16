@@ -33,6 +33,8 @@ func (f *uiFlex) setKeybinding(u *UI) {
       u.app.SetFocus(f.GetItem(0))
     case 'l':
       u.app.SetFocus(f.GetItem(1))
+    case 'q':
+      u.app.Stop()
     }
 
     return event
