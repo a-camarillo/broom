@@ -51,8 +51,9 @@ func (m *uiModal) NewHelpModal(u *UI) *uiModal {
 func (m *uiModal) confirmationDoneFunc(u *UI) {
   m.SetDoneFunc(func(buttonIndex int, buttonLabel string) {
     if buttonLabel == "No" {
-      u.app.Stop()
+      u.pages.HidePage("confirmation")
     } else {
+      deleteBranches(u) 
       u.app.Stop()
     }
   })
@@ -67,6 +68,8 @@ func (m *uiModal) setKeybinding(u *UI) {
       return tcell.NewEventKey(tcell.KeyBacktab, 0, tcell.ModNone) 
     case '?':
       u.pages.HidePage("help")
+    case ' ':
+      return tcell.NewEventKey(tcell.KeyEnter, 0, tcell.ModNone)
     }
 
     return event 

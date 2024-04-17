@@ -2,7 +2,10 @@ package ui
 
 import (
 	"fmt"
+	"log"
+	"os"
 
+	"github.com/a-camarillo/broom/branch"
 	"github.com/rivo/tview"
 )
 
@@ -11,26 +14,27 @@ import (
 type UI struct {
   app *tview.Application
   pages *tview.Pages
+  repo *branch.GitRepository
 }
 
 func NewUI() *UI {
   return &UI{
     app: tview.NewApplication(),
     pages: tview.NewPages(),
+    repo: getRepo(),
   }
 }
 
-func Initialize() {
+func Initialize(remotes bool) {
   ui := NewUI()
   
   flex := NewFlexBox(ui)
-  localList := NewBranchList(ui).newLocalList()
-  deleteList := NewBranchList(ui).newDeleteList()
+  branchList := NewBranchList(ui, remotes)
   confirmationModal := NewMenuModal(ui)
   helpModal := NewMenuModal(ui)
 
-  flex.AddItem(localList, 0, 1, true).
-       AddItem(deleteList, 0, 1, false)
+  flex.AddItem(branchList.l.List, 0, 1, true).
+       AddItem(branchList.d.List, 0, 1, true)
 
   ui.pages.
     AddPage("container", flex, true, true).
@@ -45,4 +49,14 @@ func Initialize() {
     panic(errString)
   } 
 }
- 
+
+func getRepo() *branch.GitRepository {
+  pwd, _ := os.Getwd()
+  
+  repo, err := branch.NewGitRepositoryFromString(pwd)
+  if err != nil {
+    error := fmt.Errorf("error for path %s: %s", pwd, err)
+    log.Fatal(error)
+  }
+  return repo
+}
