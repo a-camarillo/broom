@@ -20,8 +20,12 @@ func NewFlexBox(u *UI) *uiFlex {
 func (f *uiFlex) setKeybinding(u *UI) {
   f.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
     switch event.Key(){
+    case tcell.KeyLeft:
+          u.app.SetFocus(f.GetItem(0))
+          return tcell.NewEventKey(tcell.KeyRune, rune(tcell.KeyLeft), tcell.ModNone)
     case tcell.KeyRight:
-          u.app.SetFocus(f.Flex)
+          u.app.SetFocus(f.GetItem(1))
+          return tcell.NewEventKey(tcell.KeyRune, rune(tcell.KeyRight), tcell.ModNone)
     } 
 
     switch event.Rune() {
