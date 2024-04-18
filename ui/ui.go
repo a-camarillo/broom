@@ -15,6 +15,7 @@ type UI struct {
   app *tview.Application
   pages *tview.Pages
   repo *branch.GitRepository
+  deletions map[string]branch.RefName
 }
 
 func NewUI() *UI {
@@ -22,6 +23,7 @@ func NewUI() *UI {
     app: tview.NewApplication(),
     pages: tview.NewPages(),
     repo: getRepo(),
+    deletions: make(map[string]branch.RefName),
   }
 }
 
