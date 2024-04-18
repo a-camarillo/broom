@@ -3,24 +3,18 @@ package ui
 import (
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/a-camarillo/broom/branch"
-	"github.com/a-camarillo/broom/utils"
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
 
-//TODO
-//deleteBranches is returning a 'branch not found' error
-//need to investigate the issues but thankfully go logging
-//was relatively simple to discover the error
-
-var branchesToDelete []string
+var branchesToDelete map[string]branch.RefName
 
 type branchList struct {
   l *localList
   d *deleteList
+  m map[string]branch.RefName
 }
 
 type localList struct {
@@ -35,9 +29,10 @@ func NewBranchList(u *UI, remotes bool) *branchList {
   branchList := &branchList{
     l: NewLocalList(),
     d: NewDeleteList(),
+    m: make(map[string]branch.RefName),
   }
   branchList.setKeybinding(u)
-  fillLocalList(branchList.l.List, remotes, u) 
+  branchList.fillLocalList(branchList.l.List, remotes, u)
   return branchList
 }
 
@@ -81,7 +76,7 @@ func (b *branchList) setKeybinding(u *UI) {
     case 'k':
       moveUp(b.l.List)
     case ' ':
-      b.addToDeleteList()
+      b.addToDeleteList(u)
     }
     return event
   })
@@ -92,25 +87,25 @@ func (b *branchList) setKeybinding(u *UI) {
     case 'k':
       moveUp(b.d.List)
     case ' ':
-      b.removeFromDeleteList()
+      b.removeFromDeleteList(u)
     }
     return event
   })
 }
 
-func (b *branchList) addToDeleteList() {
+func (b *branchList) addToDeleteList(u *UI) {
   b.l.SetSelectedFunc(func(idx int, main string, sec string, sh rune) {
     if b.d.FindItems(main, "", false, false) == nil {
       b.d.AddItem(main, sec, sh, nil)
-      branchesToDelete = append(branchesToDelete, main) 
+      u.deletions[main] = b.m[main] 
     }
   }) 
 }
 
-func (b *branchList) removeFromDeleteList() {
+func (b *branchList) removeFromDeleteList(u *UI) {
   b.d.SetSelectedFunc(func(idx int, main string, sec string, sh rune) {
     b.d.RemoveItem(idx)
-    branchesToDelete = utils.Pop(branchesToDelete, idx)
+    delete(u.deletions, main)
   })
 }
 
@@ -133,31 +128,26 @@ func moveUp(l *tview.List) {
   }
 }
 
-func fillLocalList(l *tview.List, remotes bool, u *UI) {
+func (b *branchList) fillLocalList(l *tview.List, remotes bool, u *UI) {
   refs := initializeRefs(u)
   if !remotes {
     refNames, _ := refs.GetReferenceNames()
     for _, i := range refNames {
-      l.AddItem(i, "", 0, nil)
+      b.m[i.S] = i
+      l.AddItem(i.S, "", 0, nil)
     }
   } else {
     refNames, _ := refs.GetReferenceNamesWithRemotes()
     for _, i := range refNames {
-      l.AddItem(i, "", 0, nil)
+      b.m[i.S] = i
+      l.AddItem(i.S, "", 0, nil)
     }
   }
 }
 
 func deleteBranches(u *UI) {
-  for _, i := range branchesToDelete {
-    f, _ := os.OpenFile(".log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-    defer f.Close()
-    logger := log.New(f, "branches", log.LstdFlags)
-    logger.Println(i)
-    err := u.repo.Repository.DeleteBranch(i)
-    if err != nil {
-      logger.Println(err)
-    }
+  for _, i := range u.deletions {
+      u.repo.Repository.Storer.RemoveReference(i.P)
   }
 }
 
