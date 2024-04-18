@@ -9,8 +9,6 @@ import (
 	"github.com/rivo/tview"
 )
 
-var branchesToDelete map[string]branch.RefName
-
 type branchList struct {
   l *localList
   d *deleteList
