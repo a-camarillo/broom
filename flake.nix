@@ -18,12 +18,14 @@
         pkgs = nixpkgs.legacyPackages.${system};
         broom = pkgs.buildGoModule {
           pname = "broom";
-          version = "0.2.4";
+          version = "0.3.0";
 
           src = nix-filter.lib {
             root = ./.;
             include = [
               "cmd/"
+              "branch/"
+              "ui/"
               "go.mod"
               "go.sum"
               "main.go"
