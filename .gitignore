@@ -18,3 +18,6 @@ bin
 # Go workspace file
 go.work
 dist/
+
+# nix result
+result
