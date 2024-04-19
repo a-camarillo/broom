@@ -6,36 +6,36 @@ import (
 )
 
 type uiModal struct {
-  *tview.Modal
+	*tview.Modal
 }
 
 func NewMenuModal(u *UI) *uiModal {
-  return &uiModal{
-    Modal: tview.NewModal(),
-  } 
+	return &uiModal{
+		Modal: tview.NewModal(),
+	}
 }
 
 func (m *uiModal) NewConfirmationModal(u *UI) *uiModal {
-  // handle all Modal Methods
-  confirmationModal := &uiModal{
-      Modal: tview.NewModal(),
-  }
-  confirmationModal.setKeybinding(u)
-  confirmationModal.confirmationDoneFunc(u)
-  confirmationModal.SetText("Are you sure you want to delete these branches?").
-  SetBackgroundColor(tcell.ColorBlack).
-  AddButtons([]string{"Yes", "No"})
+	// handle all Modal Methods
+	confirmationModal := &uiModal{
+		Modal: tview.NewModal(),
+	}
+	confirmationModal.setKeybinding(u)
+	confirmationModal.confirmationDoneFunc(u)
+	confirmationModal.SetText("Are you sure you want to delete these branches?").
+		SetBackgroundColor(tcell.ColorBlack).
+		AddButtons([]string{"Yes", "No"})
 
-  return confirmationModal
+	return confirmationModal
 }
 
 func (m *uiModal) NewHelpModal(u *UI) *uiModal {
-  helpBox := &uiModal{
-    Modal: tview.NewModal(),
-  }
-  helpBox.setKeybinding(u)
-  helpBox.SetBackgroundColor(tcell.Color(tcell.ColorBlack))
-  helpBox.SetText(`
+	helpBox := &uiModal{
+		Modal: tview.NewModal(),
+	}
+	helpBox.setKeybinding(u)
+	helpBox.SetBackgroundColor(tcell.Color(tcell.ColorBlack))
+	helpBox.SetText(`
     Help
 
     Toggle Help Box: ?
@@ -46,34 +46,33 @@ func (m *uiModal) NewHelpModal(u *UI) *uiModal {
     Exit: <C-c> or q
   `)
 
-  return helpBox
+	return helpBox
 }
 
-
 func (m *uiModal) confirmationDoneFunc(u *UI) {
-  m.SetDoneFunc(func(buttonIndex int, buttonLabel string) {
-    if buttonLabel == "No" {
-      u.pages.HidePage("confirmation")
-    } else {
-      deleteBranches(u) 
-      u.app.Stop()
-    }
-  })
+	m.SetDoneFunc(func(buttonIndex int, buttonLabel string) {
+		if buttonLabel == "No" {
+			u.pages.HidePage("confirmation")
+		} else {
+			deleteBranches(u)
+			u.app.Stop()
+		}
+	})
 }
 
 func (m *uiModal) setKeybinding(u *UI) {
-  m.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
-    switch event.Rune() {
-    case 'h':
-      return tcell.NewEventKey(tcell.KeyTab, 0, tcell.ModNone) 
-    case 'l':
-      return tcell.NewEventKey(tcell.KeyBacktab, 0, tcell.ModNone) 
-    case '?':
-      u.pages.HidePage("help")
-    case ' ':
-      return tcell.NewEventKey(tcell.KeyEnter, 0, tcell.ModNone)
-    }
+	m.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+		switch event.Rune() {
+		case 'h':
+			return tcell.NewEventKey(tcell.KeyTab, 0, tcell.ModNone)
+		case 'l':
+			return tcell.NewEventKey(tcell.KeyBacktab, 0, tcell.ModNone)
+		case '?':
+			u.pages.HidePage("help")
+		case ' ':
+			return tcell.NewEventKey(tcell.KeyEnter, 0, tcell.ModNone)
+		}
 
-    return event 
-  })
+		return event
+	})
 }
