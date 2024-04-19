@@ -1,9 +1,9 @@
 package main
 
 import (
-  "github.com/a-camarillo/broom/cmd"
+	"github.com/a-camarillo/broom/cmd"
 )
 
 func main() {
-  cmd.Execute()
+	cmd.Execute()
 }

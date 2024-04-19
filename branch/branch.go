@@ -17,14 +17,14 @@ type References struct {
 }
 
 type RefName struct {
-  // S is the short hand name for the reference name
-  S string
-  
-  // P is the full reference name. This is passed to a Repository.Storer's RemoveReference Method. 
-  P plumbing.ReferenceName
+	// S is the short hand name for the reference name
+	S string
 
-  // Remote is a bool to tell if the reference is a remote or not
-  Remote bool
+	// P is the full reference name. This is passed to a Repository.Storer's RemoveReference Method.
+	P plumbing.ReferenceName
+
+	// Remote is a bool to tell if the reference is a remote or not
+	Remote bool
 }
 
 // NewGitRepositoryFromString accepts a path to a git repository and
@@ -61,12 +61,12 @@ func (r *References) GetReferenceNames() ([]RefName, error) {
 	var refNames []RefName
 
 	r.Refs.ForEach(func(ref *plumbing.Reference) error {
-		if ref.Type() == plumbing.HashReference && !ref.Name().IsTag() &&!ref.Name().IsRemote() {
-                        currRef := &RefName{
-                          S: ref.Name().Short(),
-                          P: ref.Name(),
-                          Remote: false,
-                        }
+		if ref.Type() == plumbing.HashReference && !ref.Name().IsTag() && !ref.Name().IsRemote() {
+			currRef := &RefName{
+				S:      ref.Name().Short(),
+				P:      ref.Name(),
+				Remote: false,
+			}
 			refNames = append(refNames, *currRef)
 		}
 		return nil
@@ -79,21 +79,21 @@ func (r *References) GetReferenceNamesWithRemotes() ([]RefName, error) {
 
 	r.Refs.ForEach(func(ref *plumbing.Reference) error {
 		if ref.Type() == plumbing.HashReference && !ref.Name().IsTag() {
-                  if !ref.Name().IsRemote() {
-                    currRef := &RefName{
-                      S: ref.Name().Short(),
-                      P: ref.Name(),
-                      Remote: false,
-                    }
-		    refNames = append(refNames, *currRef)
-                    } else {
-                    currRef := &RefName{
-                      S: ref.Name().Short(),
-                      P: ref.Name(),
-                      Remote: true,
-                    }
-                    refNames = append(refNames, *currRef)
-                  }
+			if !ref.Name().IsRemote() {
+				currRef := &RefName{
+					S:      ref.Name().Short(),
+					P:      ref.Name(),
+					Remote: false,
+				}
+				refNames = append(refNames, *currRef)
+			} else {
+				currRef := &RefName{
+					S:      ref.Name().Short(),
+					P:      ref.Name(),
+					Remote: true,
+				}
+				refNames = append(refNames, *currRef)
+			}
 		}
 		return nil
 	})
